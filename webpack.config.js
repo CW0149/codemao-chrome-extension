@@ -5,11 +5,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default {
+  mode: 'production',
   entry: {
     background: './src/background.js',
-    settingsPage: './src/popup.js',
+    popup: './src/popup.js',
   },
   output: {
-    path: path.resolve(__dirname, 'public'),
+    path: path.resolve(__dirname, 'build'),
   },
 };

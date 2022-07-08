@@ -1,17 +1,33 @@
-/* eslint-disable no-undef */
-
-import {createCodemaoToolTab, createInternalAccountTab} from './tools';
+import {
+  MESSAGE_TYPES,
+} from './constants.js';
+import {
+  createCodemaoToolTab,
+  getFestivalLoggedInInfo,
+  getInternalAccountToken,
+  sendMessage,
+} from './tools.js';
 
 const openToolBtn = document.getElementById('openToolBtn');
 
-const getFestivalLoginInfo = async () => ({
-  loggedIn: false,
-  info: null,
-});
-const getInternalAccountLoginInfo = async () => ({
-  loggedIn: false,
-  info: null,
-}); npm;
+const getFestivalLoginInfo = async () => {
+  const info = await getFestivalLoggedInInfo();
+
+  return {
+    loggedIn: info.loggedIn,
+    info: {
+      token: info.token,
+      teacherEmail: info.teacherEmail,
+    },
+  };
+};
+const getInternalAccountLoginInfo = async () => {
+  const token = await getInternalAccountToken();
+  return {
+    loggedIn: !!token,
+    info: {token},
+  };
+};
 
 const getLoginInfo = async () => {
   const festivalLoginInfo = await getFestivalLoginInfo();
@@ -34,25 +50,19 @@ const openToolHandler = async () => {
     },
   } = await getLoginInfo();
 
-  console.log(festivalLoggedInInfo, internalAccountLoginInfo);
-  if (!internalAccountLoggedIn) {
-    createInternalAccountTab();
-    return;
-  }
+  const validLogin = await sendMessage({
+    type: MESSAGE_TYPES.HANDLE_LOGIN_INFO,
+    message: {festivalLoggedIn, internalAccountLoggedIn},
+  });
+  if (!validLogin) return;
 
-  if (!festivalLoggedIn) {
-    createFestivalTab();
-    return;
-  }
+  const {token, teacherEmail} = festivalLoggedInInfo;
 
-  const {loggedIn, token, teacherEmail} = loggedInInfo;
-
-  if (loggedIn) {
-    await createCodemaoToolTab(token, teacherEmail, internalAccountToken);
-  } else {
-    await alertInTab(ALERT_LOGIN_FESTIVAL);
-    await selectFestivalTab();
-  }
+  await createCodemaoToolTab(
+      token,
+      teacherEmail,
+      internalAccountLoginInfo.token,
+  );
 };
 
 openToolBtn.addEventListener('click', openToolHandler);

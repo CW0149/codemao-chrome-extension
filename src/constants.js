@@ -9,3 +9,8 @@ export const TOOL_URL = PROD_TOOL_URL;
 export const INTERNAL_ACCOUNT_TOKEN_KEY = 'internal_account_token';
 export const INTERNAL_ACCOUNT_PLATFORM_URL = 'https://internal-account.codemao.cn/';
 export const ALERT_LOGIN_INTERNAL_ACCOUNT = '请先登录编程猫内部系统，之后再重新点击“打开班期工具”按钮';
+
+export const MESSAGE_TYPES = {
+  ALERT_IN_NEW_TAB: 'alertInNewTab',
+  HANDLE_LOGIN_INFO: 'handleLogin',
+};

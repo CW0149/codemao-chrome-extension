@@ -1,7 +1,11 @@
 import {
-  FESTIVAL_TOKEN_KEY, INTERNAL_ACCOUNT_PLATFORM_URL, INTERNAL_ACCOUNT_TOKEN_KEY, TOOL_URL, TO_MATCH_FESTIVAL_URL,
-} from './constants';
-import {getTeacherEmail} from './request';
+  FESTIVAL_TOKEN_KEY,
+  INTERNAL_ACCOUNT_PLATFORM_URL,
+  INTERNAL_ACCOUNT_TOKEN_KEY,
+  TOOL_URL,
+  TO_MATCH_FESTIVAL_URL,
+} from './constants.js';
+import {getTeacherEmail} from './request.js';
 
 export const getFestivalToken = async () => (
   await chrome.cookies.get({
@@ -92,4 +96,9 @@ export const selectFestivalTab = async () => {
   }
 
   chrome.tabs.update(toSelectTab.id, {active: true});
+};
+
+
+export const sendMessage = async (messageObj) => {
+  return chrome.runtime.sendMessage(messageObj);
 };
