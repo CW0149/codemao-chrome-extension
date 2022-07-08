@@ -13,5 +13,5 @@
     "48": "/images/icon.png",
     "128": "/images/icon.png"
   },
-  "host_permissions": ["https://festival.codemao.cn/*"]
+  "host_permissions": ["https://festival.codemao.cn/*", "https://internal-account.codemao.cn/*"]
 }

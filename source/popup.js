@@ -10,12 +10,23 @@ const PROD_TOOL_URL = 'http://42.194.164.225/codemao-resitival-tool/';
 const TEST_TOOL_URL = 'http://localhost:3000';
 const TOOL_URL = PROD_TOOL_URL;
 
+const INTERNAL_ACCOUNT_TOKEN_KEY = 'internal_account_token';
+const INTERNAL_ACCOUNT_PLATFORM_URL = 'https://internal-account.codemao.cn/';
+const ALERT_LOGIN_INTERNAL_ACCOUNT = '请先登录编程猫内部系统，之后再重新点击“打开班期工具”按钮';
+
+
 const openToolHandler = async () => {
+  const internalAccountToken = await getInternalAccountToken();
+  if (!internalAccountToken) {
+    alert(ALERT_LOGIN_INTERNAL_ACCOUNT);
+    return;
+  }
+
   const loggedInInfo = await getLoggedInInfo();
   const { loggedIn, token, teacherEmail } = loggedInInfo;
 
   if (loggedIn) {
-    openCodemaoToolTab(token, teacherEmail);
+    openCodemaoToolTab(token, teacherEmail, internalAccountToken);
   } else {
     alert(ALERT_LOGIN);
 
@@ -51,10 +62,11 @@ const openToolHandler = async () => {
 
 openToolBtn.addEventListener('click', openToolHandler);
 
-const openCodemaoToolTab = async (token, teacherEmail) => {
+const openCodemaoToolTab = async (token, teacherEmail, internalAccountToken) => {
   const searchParams = new URLSearchParams({
     token,
     teacher_email: teacherEmail,
+    internal_account_token: internalAccountToken
   });
 
   window.open(`${TOOL_URL}?${searchParams.toString()}`);
@@ -94,4 +106,16 @@ const getTeacherEmail = (token) => {
     token,
     'https://festival.codemao.cn/yyb2019/index/info'
   ).then((res) => res?.info?.username ?? '');
+};
+
+
+const getInternalAccountToken = async () => {
+  const token = (
+    await chrome.cookies.get({
+      name: INTERNAL_ACCOUNT_TOKEN_KEY,
+      url: INTERNAL_ACCOUNT_PLATFORM_URL,
+    })
+  )?.value;
+
+  return token;
 };
